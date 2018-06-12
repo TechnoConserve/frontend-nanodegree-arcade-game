@@ -22,7 +22,8 @@ const Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
+        lastTime,
+        stop;
 
 
     canvas.width = 505;
@@ -33,6 +34,7 @@ const Engine = (function(global) {
      * and handles properly calling the update and render methods.
      */
     function main() {
+        if(stop) return;
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
          * instructions at different speeds we need a constant value that
@@ -82,9 +84,10 @@ const Engine = (function(global) {
 
         function checkCollisions() {
             allEnemies.forEach(function (enemy) {
-                if ((between(enemy.x, player.x, player.x + 75)) &&
+                if ((between(enemy.x, player.x - 70, player.x + 70)) &&
                     (between(enemy.y, player.y, player.y + 80))) {
                         gameOver();
+                        stop = true;
                 }
             });
         }
@@ -175,14 +178,12 @@ const Engine = (function(global) {
                 return "s" }
         }
 
-        document.getElementById("overlayTitle").innerText = "Game Over";
-
         document.getElementById("score").innerText = player.score.toString();
         document.getElementById("gameTime").innerHTML = minutes + " minute" + pluralize(minutes) + " and " + seconds
             + " second" + pluralize(seconds);
     }
 
-    // Open the overlay and update it depending if the player won or lost
+    // Open the overlay and update it
     function gameOver() {
         updateOverlay();
         openOverlay();

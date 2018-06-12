@@ -43,12 +43,24 @@ const Character = function (x, y) {
     this.score = 0;
 };
 
-Character.prototype.update = function (dt) {
-    player.score += 1;
+Character.prototype.update = function(dt) {
+    function score(character) {
+        character.score += 1;
+        character.reset();
+    }
+
+    if (this.y <= -25) {
+        score(this);
+    }
 };
 
-Character.prototype.render = function () {
+Character.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+Character.prototype.reset = function() {
+    this.x = 200;
+    this.y = 380;
 };
 
 // Update the character coordinates based on keyboard input
