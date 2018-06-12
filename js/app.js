@@ -38,8 +38,8 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-const Character = function (x, y) {
-    this.sprite = 'images/char-boy.png';
+const Character = function (imageLoc, x, y) {
+    this.sprite = imageLoc;
     this.x = x;
     this.y = y;
     this.score = 0;
@@ -82,10 +82,10 @@ Character.prototype.handleInput = function (keyPress) {
 };
 
 // allEnemies stores our enemy objects
-let allEnemies,
-    player;
+let allEnemies = [],
+    player = new Character('images/char-boy.png', 200, 380);
 
-function freshStart() {
+function freshStart(characterSelection) {
     setupTimer();
     allEnemies = [];
     // loop to create 5 enemies
@@ -104,7 +104,7 @@ function freshStart() {
     /* Create a player object that will be located on the bottom
      * row, middle column
      */
-    player = new Character(200, 380);
+    player = new Character(characterSelection, 200, 380);
     return player;
 }
 
@@ -152,4 +152,27 @@ function setupTimer() {
     }, 1000);
 }
 
-freshStart();
+/* Open Game Menu */
+function openMenu() {
+    document.getElementById("menu").style.height = "100%";
+}
+
+/* Close Game Menu */
+function closeMenu() {
+    document.getElementById("menu").style.height = "0%";
+}
+
+function gameStart() {
+    let selection;
+    const characters = document.querySelectorAll("#characters img");
+    Array.from(characters).forEach(elem => {
+        elem.addEventListener("click", function () {
+            selection = this.getAttribute("src");
+            freshStart(selection);
+            closeMenu();
+        });
+    });
+    openMenu();
+}
+
+gameStart();
