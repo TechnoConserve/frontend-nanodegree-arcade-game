@@ -1,5 +1,13 @@
+@import url('https://fonts.googleapis.com/css?family=Permanent+Marker');
+
 body {
+    font-family: 'Permanent Marker', cursive;
     text-align: center;
+    font-size: 3em;
+}
+
+h1 {
+    font-size: 3em;
 }
 
 /* ==========================================================================
