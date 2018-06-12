@@ -24,6 +24,7 @@ const Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
+
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
@@ -63,7 +64,6 @@ const Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
         lastTime = Date.now();
         main();
     }
@@ -79,7 +79,17 @@ const Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+
+        function checkCollisions() {
+            allEnemies.forEach(function (enemy) {
+                if ((between(enemy.x, player.x, player.x + 75)) &&
+                    (between(enemy.y, player.y, player.y + 80))) {
+                        gameOver();
+                }
+            });
+        }
+
+        checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -156,12 +166,31 @@ const Engine = (function(global) {
         player.render();
     }
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
-     */
-    function reset() {
-        // noop
+    function updateOverlay() {
+        // Function to add to 's' to words based on the number the word is referencing
+        function pluralize(num) {
+            if (num === 1) {
+                return ""
+            } else {
+                return "s" }
+        }
+
+        document.getElementById("overlayTitle").innerText = "Game Over";
+
+        document.getElementById("score").innerText = player.score.toString();
+        document.getElementById("gameTime").innerHTML = minutes + " minute" + pluralize(minutes) + " and " + seconds
+            + " second" + pluralize(seconds);
+    }
+
+    // Open the overlay and update it depending if the player won or lost
+    function gameOver() {
+        updateOverlay();
+        openOverlay();
+    }
+
+    /* Open */
+    function openOverlay() {
+        document.getElementById("gameOver").style.height = "100%";
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -183,3 +212,12 @@ const Engine = (function(global) {
      */
     global.ctx = ctx;
 })(this);
+
+function between(coordinate, min, max) {
+    return coordinate >= min && coordinate <= max;
+}
+
+/* Close */
+function closeOverlay() {
+    document.getElementById("gameOver").style.height = "0%";
+}

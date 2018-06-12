@@ -40,10 +40,11 @@ const Character = function (x, y) {
     this.sprite = 'images/char-boy.png';
     this.x = x;
     this.y = y;
+    this.score = 0;
 };
 
 Character.prototype.update = function (dt) {
-
+    player.score += 1;
 };
 
 Character.prototype.render = function () {
@@ -97,6 +98,9 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
+// Start the game timer once the player starts moving
+document.addEventListener("keyup", setupTimer, {once: true});
+
 // Get a random row but add one since we don't want
 // a water block which would be row 0
 function getRandomStoneRow() {
@@ -109,4 +113,16 @@ function getRandomStoneBlock() {
     const row = getRandomStoneRow();
     const col = Math.floor(Math.random() * Math.floor(5));
     return {x: col * 100, y: row * 81 - 25};
+}
+
+let startTime, updateTimer, elapsed, minutes, seconds;  // Define variables that will hold timer info when game is started
+function setupTimer() {
+    startTime = new Date().getTime();
+    updateTimer = setInterval(function () {
+        const now = new Date().getTime();
+        elapsed = now - startTime;
+
+        minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+        seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+    }, 1000);
 }
