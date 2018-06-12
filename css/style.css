@@ -47,6 +47,19 @@ h1 {
     top: 20px;
     right: 45px;
     font-size: 60px;
+    z-index: 2;
+}
+
+#menu .overlay-content {
+    top: 0;
+}
+
+#menu h1 {
+    margin: 10px;
+}
+
+#menu p {
+    margin: 1em;
 }
 
 /* When the height of the screen is less than 450 pixels, change the position of the close button again, so they don't
