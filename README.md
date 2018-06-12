@@ -1,7 +1,8 @@
 Frontend Nanodegree Frogger Clone
 ===============================
 
-A basic clone of the classic arcade game Frogger.
+A basic clone of the classic arcade game Frogger. This game can now be played on my [personal
+website](https://averyuslaner.com/projects/bugger/).
 
 # How to Play
 
@@ -10,4 +11,4 @@ touching any of the enemy bugs to increase your score. The game ends when you ge
 
 ## Prerequisites
 
-None. Just download the files, and open index.html in a modern browser. 
+None.
