@@ -1,31 +1,41 @@
 // Enemies our player must avoid
-const Enemy = function(x, y) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
+const Enemy = function(x, y, speed) {
     this.sprite = 'images/enemy-bug.png';
+    // How fast the object can move across the board
+    this.speed = speed;
+    // Where the object is located on the canvas
     this.x = x;
     this.y = y;
 };
 
-// Update the enemy's position, required method for game
+// Define some min and max speeds we use for moving enemies
+Enemy.minSpeed = 20;
+Enemy.maxSpeed = 200;
+
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
+    // Multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+
+    // if the object is no longer visible, move it back
+    // to the left side of the canvas
+    if (this.x > 500) {
+        this.x = -100;
+        // Randomly choose a new row as well
+        const row = getRandomStoneRow();
+        this.y = row * 81 - 25;
+    } else {
+        // otherwise, move it right based on speed
+        this.x += this.speed * dt;
+    }
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the enemies on the screen
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
 const Character = function (x, y) {
     this.sprite = 'images/char-boy.png';
     this.x = x;
@@ -57,12 +67,15 @@ Character.prototype.handleInput = function (keyPress) {
 
 // allEnemies stores our enemy objects
 let allEnemies = [];
-// loop to create multiple enemies
+// loop to create 5 enemies
 for (let i = 0; i < 5; i++) {
     // We want the enemies to spawn on one of the three
     // stone rows
     const block = getRandomStoneBlock();
-    const enemy = new Enemy(block.x, block.y);
+    // Get a random speed for the enemy
+    const speed = Math.random() * Enemy.maxSpeed + Enemy.minSpeed;
+    // Create enemy object and add to array of enemy objects
+    const enemy = new Enemy(block.x, block.y, speed);
     allEnemies.push(enemy);
 }
 
@@ -84,13 +97,16 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
+// Get a random row but add one since we don't want
+// a water block which would be row 0
+function getRandomStoneRow() {
+    return Math.floor(Math.random() * Math.floor(3)) + 1;
+}
 
 // Return coordinates to one of the stone blocks
 // Coordinate range is from (0, 56) to (400, 218)
 function getRandomStoneBlock() {
-    // Get a random row but add one since we don't want
-    // a water block which would be row 0
-    const row = Math.floor(Math.random() * Math.floor(3)) + 1;
+    const row = getRandomStoneRow();
     const col = Math.floor(Math.random() * Math.floor(5));
     return {x: col * 100, y: row * 81 - 25};
 }
