@@ -14,12 +14,14 @@ Enemy.maxSpeed = 200;
 
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    // Multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
+    /* Multiply any movement by the dt parameter
+     * which will ensure the game runs at the same speed for
+     * all computers.
+     */
 
-    // if the object is no longer visible, move it back
-    // to the left side of the canvas
+    /* if the object is no longer visible, move it back
+     * to the left side of the canvas
+     */
     if (this.x > 500) {
         this.x = -100;
         // Randomly choose a new row as well
@@ -43,7 +45,7 @@ const Character = function (x, y) {
     this.score = 0;
 };
 
-Character.prototype.update = function(dt) {
+Character.prototype.update = function() {
     function score(character) {
         character.score += 1;
         character.reset();
@@ -63,9 +65,10 @@ Character.prototype.reset = function() {
     this.y = 380;
 };
 
-// Update the character coordinates based on keyboard input
-// Checks are made to ensure coordinates are not updated
-// beyond the game canvas
+/* Update the character coordinates based on keyboard input
+ * Checks are made to ensure coordinates are not updated
+ * beyond the game canvas
+ */
 Character.prototype.handleInput = function (keyPress) {
     if (keyPress === "left" && this.x > 0) {
         this.x -= 100;
@@ -79,26 +82,36 @@ Character.prototype.handleInput = function (keyPress) {
 };
 
 // allEnemies stores our enemy objects
-let allEnemies = [];
-// loop to create 5 enemies
-for (let i = 0; i < 5; i++) {
-    // We want the enemies to spawn on one of the three
-    // stone rows
-    const block = getRandomStoneBlock();
-    // Get a random speed for the enemy
-    const speed = Math.random() * Enemy.maxSpeed + Enemy.minSpeed;
-    // Create enemy object and add to array of enemy objects
-    const enemy = new Enemy(block.x, block.y, speed);
-    allEnemies.push(enemy);
+let allEnemies,
+    player;
+
+function freshStart() {
+    setupTimer();
+    allEnemies = [];
+    // loop to create 5 enemies
+    for (let i = 0; i < 5; i++) {
+        /* We want the enemies to spawn on one of the three
+         * stone rows
+         */
+        const block = getRandomStoneBlock();
+        // Get a random speed for the enemy
+        const speed = Math.random() * Enemy.maxSpeed + Enemy.minSpeed;
+        // Create enemy object and add to array of enemy objects
+        const enemy = new Enemy(block.x, block.y, speed);
+        allEnemies.push(enemy);
+    }
+
+    /* Create a player object that will be located on the bottom
+     * row, middle column
+     */
+    player = new Character(200, 380);
+    return player;
 }
 
-// Create a player object that will be located on the bottom
-// row, middle column
-const player = new Character(200, 380);
 
-
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+/* This listens for key presses and sends the keys to your
+ * Player.handleInput() method. You don't need to modify this.
+ */
 document.addEventListener('keyup', function(e) {
     const allowedKeys = {
         37: 'left',
@@ -110,24 +123,24 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-// Start the game timer once the player starts moving
-document.addEventListener("keyup", setupTimer, {once: true});
-
-// Get a random row but add one since we don't want
-// a water block which would be row 0
+/* Get a random row but add one since we don't want
+ * a water block which would be row 0
+ */
 function getRandomStoneRow() {
     return Math.floor(Math.random() * Math.floor(3)) + 1;
 }
 
-// Return coordinates to one of the stone blocks
-// Coordinate range is from (0, 56) to (400, 218)
+/* Return coordinates to one of the stone blocks
+ * Coordinate range is from (0, 56) to (400, 218)
+ */
 function getRandomStoneBlock() {
     const row = getRandomStoneRow();
     const col = Math.floor(Math.random() * Math.floor(5));
     return {x: col * 100, y: row * 81 - 25};
 }
 
-let startTime, updateTimer, elapsed, minutes, seconds;  // Define variables that will hold timer info when game is started
+// Define variables that will hold timer info when game is started
+let startTime, updateTimer, elapsed, minutes, seconds;
 function setupTimer() {
     startTime = new Date().getTime();
     updateTimer = setInterval(function () {
@@ -138,3 +151,5 @@ function setupTimer() {
         seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
     }, 1000);
 }
+
+freshStart();
